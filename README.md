@@ -7,68 +7,91 @@
 ![Netlify](https://img.shields.io/badge/Netlify-Functions-00C7B7?style=flat-square&logo=netlify&logoColor=white)
 ![Repo](https://img.shields.io/badge/Source-Private-orange?style=flat-square)
 
-**An AI-powered voice bot that handles dental appointment scheduling over the phone.** Integrates with Vapi for voice AI, Google Calendar for availability, and Twilio for SMS confirmations — all running on serverless infrastructure.
+**I built an AI receptionist that picks up the phone, talks to patients naturally, checks the dentist's calendar, books appointments, and sends SMS confirmations — without a human touching anything.**
 
 ---
 
-## How It Works
+## Why This Matters
+
+Dental offices miss calls. A lot of them. Every missed call is a lost patient worth $500–$2,000/year in recurring visits. Hiring a receptionist costs $30k+/year. This bot handles scheduling 24/7 for a fraction of that.
+
+This isn't a chatbot — it's a **voice AI** that handles real phone calls with natural conversation.
+
+## What I Built
+
+### Conversational Voice Agent (Vapi)
+- Integrated **Vapi AI** as the voice layer — handles natural speech recognition and response generation
+- The bot understands context: *"I need a cleaning next Tuesday afternoon"* → checks availability → *"I have 2:00 PM and 3:30 PM open. Which works better?"*
+- Handles edge cases: no availability, rescheduling, cancellations, questions about services
+
+### Real-Time Calendar Integration
+- Connected to **Google Calendar API** to check live availability
+- Bot queries open slots in real-time during the call — no stale data
+- Books appointments directly on the calendar with patient name, service type, and contact info
+- Handles conflicts: if a slot gets taken while the patient is on the phone, the bot offers alternatives
+
+### SMS Confirmation Pipeline
+- After booking, automatically sends an **SMS confirmation via Twilio** with:
+  - Appointment date, time, and dentist name
+  - Office address and contact info
+  - Cancellation/rescheduling instructions
+
+### Serverless Backend (Netlify Functions)
+Built the entire backend as **serverless functions** — no server to manage, scales automatically:
+
+| Function | What It Does |
+|----------|-------------|
+| `check-availability` | Queries Google Calendar for open slots in a date range |
+| `book-appointment` | Creates the calendar event + triggers SMS confirmation |
+| `status` | Health check endpoint for monitoring uptime |
+| `diagnose` | Troubleshooting endpoint that validates all API connections |
+
+### Monitoring Dashboard
+- Built a static HTML/JS dashboard for monitoring system health
+- Shows API connection status, recent bookings, and error logs
+- One-page setup instructions for the dental office
+
+## How a Call Works
 
 ```
-          Incoming Call
-               │
-               ▼
+Patient calls the office number
+         │
+         ▼
 ┌──────────────────────────┐
 │       Vapi AI Voice      │
-│   (Natural Language)     │
-│   "I'd like to book      │
-│    an appointment..."    │
+│  "Hi! I'd like to book   │
+│   a cleaning for next    │
+│   Tuesday afternoon."    │
 └────────────┬─────────────┘
              │
-    ┌────────┼────────┐
-    ▼        ▼        ▼
-┌────────┐┌────────┐┌────────┐
-│ Check  ││ Book   ││ Send   │
-│ Avail. ││ Appt.  ││ SMS    │
-│        ││        ││ Confirm│
-└────────┘└────────┘└────────┘
-    │        │        │
-    ▼        ▼        ▼
- Google    Google    Twilio
-Calendar  Calendar    SMS
+             ▼
+┌──────────────────────────┐
+│   check-availability()   │
+│   Google Calendar API    │
+│   → "2:00 PM and 3:30   │
+│     PM are available"    │
+└────────────┬─────────────┘
+             │
+             ▼
+┌──────────────────────────┐
+│    book-appointment()    │
+│   Creates calendar event │
+│   with patient details   │
+└────────────┬─────────────┘
+             │
+             ▼
+┌──────────────────────────┐
+│      Twilio SMS          │
+│  "Your appointment is    │
+│   confirmed for Tue at   │
+│   2:00 PM. See you then!"│
+└──────────────────────────┘
 ```
-
-1. **Patient calls** → Vapi AI voice agent handles the conversation naturally
-2. **Availability check** → Queries Google Calendar for open slots
-3. **Booking** → Creates calendar event with patient details
-4. **Confirmation** → Sends SMS confirmation via Twilio
-
-## Backend Functions
-
-| Function | Purpose |
-|----------|---------|
-| `check-availability` | Queries Google Calendar for open appointment slots |
-| `book-appointment` | Creates calendar events with patient info and appointment details |
-| `status` | System health check and configuration validation |
-| `diagnose` | Diagnostic endpoint for troubleshooting integrations |
 
 ## Tech Stack
 
-- **Voice AI:** Vapi (conversational voice agent)
-- **Backend:** Netlify Serverless Functions (Node.js)
-- **Calendar:** Google Calendar API (googleapis)
-- **SMS:** Twilio Programmable Messaging
-- **Database:** Supabase (appointment records)
-- **Frontend:** Static HTML/JS monitoring dashboard
-
-## Skills Demonstrated
-
-- AI voice agent integration (Vapi)
-- Serverless architecture on Netlify Functions
-- Google Calendar API integration
-- Twilio SMS implementation
-- API design with health checks and diagnostics
-- Real-world business automation for a service industry
+`JavaScript (ES6+)` · `Vapi AI` · `Google Calendar API` · `Twilio SMS` · `Netlify Functions` · `Supabase` · `HTML/JS Dashboard`
 
 ---
 
-> *This is a showcase page for a private repository. Source code available upon request for verified opportunities.*
+> *Closed source. This is a real business automation tool — demo and source code available for serious inquiries.*
